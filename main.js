@@ -53,7 +53,40 @@ function obtenerClass(){
     }
 }
 
+function crearCarrito(){
+    let divCarrito = document.createElement("div");
+    divCarrito.innerHTML = `<h3>Carrito</h3>
+                            <ul>
+                                <li id = "service">Servicio:</li>
+                                <li id = "cantidad">Cantidad: </li>
+                                <li id = "valorTotal">valor: </li>
+                            </ul>`;
+    document.body.append(divCarrito);
+}
+
+let contador = 0;
+
+function contratar(){
+    const btnServicio = document.getElementsByClassName("btn");
+    for(const boton of btnServicio){
+        boton.onclick = (e) => {
+            e.stopPropagation();
+            contador ++;
+            boton.textContent = "contratado";
+            const seleccionado = arrayServicios.find(obj => obj.id == e.target.id);
+            let notificacion = document.getElementById("service");
+            notificacion.innerHTML += ` ${seleccionado.nombre}`;
+            let precio = document.getElementById("valorTotal");
+            precio.innerHTML += `${seleccionado.precio}`;
+            let cant = document.getElementById("cantidad");
+            cant.innerHTML += contador;
+        }
+    }
+}
+
 
 titulo();
 ordenarMenorMayor();
 obtenerClass();
+crearCarrito();
+contratar();
