@@ -8,6 +8,7 @@ class Servicio{
 }
 
 const arrayServicios = [];
+const carritoServicios = [];
 
 arrayServicios.push(new Servicio(1, "Customer experience", "Fidelización del cliente a través de experiencias hechas a medida." , 200 ));
 arrayServicios.push(new Servicio(2, "Business Model", "Descubrimiento de oportunidades y diseño de una estrategia integral de negocio." , 300 ));
@@ -56,7 +57,7 @@ function obtenerClass(){
 function crearCarrito(){
     let divCarrito = document.createElement("div");
     divCarrito.innerHTML = `<h3>Carrito</h3>
-                            <ul>
+                            <ul id = "lista">
                                 <li id = "service">Servicio:</li>
                                 <li id = "cantidad">Cantidad: </li>
                                 <li id = "valorTotal">valor: </li>
@@ -71,19 +72,40 @@ function contratar(){
     for(const boton of btnServicio){
         boton.onclick = (e) => {
             e.stopPropagation();
-            contador ++;
-            boton.textContent = "contratado";
-            const seleccionado = arrayServicios.find(obj => obj.id == e.target.id);
-            let notificacion = document.getElementById("service");
-            notificacion.innerHTML += ` ${seleccionado.nombre}`;
-            let precio = document.getElementById("valorTotal");
-            precio.innerHTML += `${seleccionado.precio}`;
-            let cant = document.getElementById("cantidad");
-            cant.innerHTML += contador;
-        }
+            let existe = carritoServicios.find(el => el.id == e.target.id)
+            if(existe){
+                existe.cantidad = existe.cantidad + 1
+                contador = existe.cantidad
+                document.getElementById(`cantidad${existe.id}`).innerHTML=`<li id = "cantidad${existe.id}">Cantidad: ${existe.cantidad}</li>`    
+            } else {
+                boton.textContent = "contratado";
+                const seleccionado = arrayServicios.find(el => el.id == e.target.id);
+                carritoServicios.push(seleccionado);
+                seleccionado.cantidad = 1
+                contador = seleccionado.cantidad
+                imprimirCarrito()
+                
+            }
+            obtenerTotal();
+        }   
     }
 }
 
+function imprimirCarrito(){
+    let lista = document.getElementById("lista");
+    lista.innerHTML= ""
+    for(const producto of carritoServicios){
+        lista.innerHTML += `<li id = "service">Servicio: ${producto.nombre}</li>
+                            <li id = "cantidad${producto.id}">Cantidad: ${producto.cantidad}</li>
+                            <li id = "valorTotal">Valor: ${producto.precio}</li>`
+    }
+}
+let total = 0;
+function obtenerTotal(){
+    total = carritoServicios.reduce((acc, el) => acc + el.precio, 0);
+    total = total * contador;
+    console.log(total);
+}
 
 titulo();
 ordenarMenorMayor();
